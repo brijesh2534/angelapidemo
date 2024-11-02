@@ -1,8 +1,15 @@
 <?php
 function fetchStockData($url, $retries = 3) {
+    // Define context with headers to bypass restrictions
+    $context = stream_context_create([
+        "http" => [
+            "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36"
+        ]
+    ]);
+
     for ($i = 0; $i < $retries; $i++) {
-        // Fetch the data using file_get_contents
-        $response = @file_get_contents($url); // Use @ to suppress warnings
+        // Fetch the data using file_get_contents with context
+        $response = @file_get_contents($url, false, $context); // Use @ to suppress warnings
 
         if ($response !== false) {
             $data = json_decode($response, true);
